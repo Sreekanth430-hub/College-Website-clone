@@ -36,7 +36,7 @@ export default function AddMarks() {
    ...form
   });
 
-  alert("Marks Submitted ✅");
+  alert("Marks Submitted ");
  };
 
  return (

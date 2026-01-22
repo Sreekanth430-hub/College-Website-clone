@@ -25,6 +25,12 @@ export default function FacultyDashboard() {
   attendanceSessions: 0,
   marksEntered: 0
  });
+ const [activity, setActivity] = useState({
+  upcomingClasses: [],
+  pendingTasks: [],
+  recentAttendance: [],
+  recentMarks: []
+ });
  const [loading, setLoading] = useState(true);
 
  useEffect(() => {
@@ -42,6 +48,15 @@ export default function FacultyDashboard() {
      attendanceSessions: coursesRes.data.length * 8,
      marksEntered: coursesRes.data.length * 45
     });
+
+    // Fetch dashboard activity data
+    const activityRes = await axios.get(`http://localhost:5050/api/faculty/dashboard/${user.id}`);
+    setActivity({
+     upcomingClasses: activityRes.data.upcomingClasses || [],
+     pendingTasks: activityRes.data.pendingTasks || [],
+     recentAttendance: activityRes.data.recentAttendance || [],
+     recentMarks: activityRes.data.recentMarks || []
+    });
    } catch (err) {
     console.log("Course Fetch Error:", err);
     // Mock data for demo
@@ -55,11 +70,55 @@ export default function FacultyDashboard() {
      attendanceSessions: 16,
      marksEntered: 90
     });
+    // Mock activity data
+    setActivity({
+     upcomingClasses: [
+      { id: 1, subject: "Database Management Systems", day: "Monday", time: "10:00 - 11:00", room: "Room 301" },
+      { id: 2, subject: "Computer Networks", day: "Tuesday", time: "2:00 - 3:00 PM", room: "Room 302" },
+      { id: 3, subject: "Database Management Systems", day: "Wednesday", time: "10:00 - 11:00 AM", room: "Room 301" }
+     ],
+     pendingTasks: [
+      { type: "marks", title: "Submit Internal Marks", subtitle: "DBMS - Due in 3 days", priority: "danger" },
+      { type: "attendance", title: "Attendance Update", subtitle: "CN - Not updated for 2 days", priority: "warning" },
+      { type: "assignment", title: "Assignment Review", subtitle: "5 assignments pending review", priority: "success" }
+     ],
+     recentAttendance: [],
+     recentMarks: []
+    });
    }
    setLoading(false);
   };
   fetchData();
  }, [user.id]);
+
+ // Helper function to get priority badge class
+ const getPriorityBadge = (priority) => {
+  switch (priority) {
+   case "danger": return "badge-danger";
+   case "warning": return "badge-warning";
+   case "success": return "badge-success";
+   default: return "badge-info";
+  }
+ };
+
+ // Helper function to get priority icon
+ const getPriorityIcon = (type) => {
+  switch (type) {
+   case "marks": return "📝";
+   case "attendance": return "📋";
+   case "assignment": return "✅";
+   default: return "⚡";
+  }
+ };
+
+ // Get day name from day number
+ const getDayName = (day) => {
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  if (typeof day === "number") {
+   return days[day] || day;
+  }
+  return day;
+ };
 
  if (loading) {
   return (
@@ -76,23 +135,23 @@ export default function FacultyDashboard() {
   <Layout>
    {/* Welcome Header */}
    <div className="dashboard-welcome">
-    <h2>Welcome, {user?.name} 👨‍🏫</h2>
+    <h2>Welcome, {user?.name} </h2>
     <p>{user?.department} Department</p>
    </div>
 
    {/* Quick Actions */}
    <div className="quick-actions">
     <Link to="/faculty/attendance" className="quick-action-btn primary">
-     📋 Mark Attendance
+      Mark Attendance
     </Link>
     <Link to="/faculty/marks" className="quick-action-btn success">
-     📝 Enter Marks
+      Enter Marks
     </Link>
     <Link to="/faculty/timetable" className="quick-action-btn purple">
-     📅 View Timetable
+      View Timetable
     </Link>
     <Link to="/faculty/analytics" className="quick-action-btn orange">
-     📊 Analytics
+      Analytics
     </Link>
    </div>
 
@@ -119,7 +178,7 @@ export default function FacultyDashboard() {
    {/* Assigned Courses */}
    <div className="dashboard-card">
     <div className="dashboard-card-header">
-     <h3><span>📚</span> Assigned Courses</h3>
+     <h3><span></span> Assigned Courses</h3>
     </div>
 
     {courses.length === 0 ? (
@@ -175,39 +234,33 @@ export default function FacultyDashboard() {
     )}
    </div>
 
-   {/* Recent Activity Section */}
+   {/* Recent Activity Section - Dynamic */}
    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
     {/* Upcoming Classes */}
     <div className="dashboard-card">
      <div className="dashboard-card-header">
-      <h3><span>📅</span> Upcoming Classes</h3>
+      <h3><span>📖</span> Upcoming Classes</h3>
      </div>
-     <div className="info-list">
-      <div className="info-item">
-       <span className="info-item-icon">📖</span>
-       <div className="info-item-content">
-        <div className="info-item-title">Database Management Systems</div>
-        <div className="info-item-subtitle">Monday, 10:00 - 11:00 AM</div>
-       </div>
-       <span className="badge badge-info">Room 301</span>
+     {activity.upcomingClasses.length === 0 ? (
+      <div className="empty-state" style={{ padding: "30px" }}>
+       <div className="empty-state-icon">📅</div>
+       <h3>No Upcoming Classes</h3>
+       <p>Check your timetable for scheduled classes</p>
       </div>
-      <div className="info-item">
-       <span className="info-item-icon">📖</span>
-       <div className="info-item-content">
-        <div className="info-item-title">Computer Networks</div>
-        <div className="info-item-subtitle">Tuesday, 2:00 - 3:00 PM</div>
-       </div>
-       <span className="badge badge-info">Room 302</span>
+     ) : (
+      <div className="info-list">
+       {activity.upcomingClasses.slice(0, 5).map((cls, index) => (
+        <div className="info-item" key={index}>
+         <span className="info-item-icon">📖</span>
+         <div className="info-item-content">
+          <div className="info-item-title">{cls.subject}</div>
+          <div className="info-item-subtitle">{getDayName(cls.day)}, {cls.time}</div>
+         </div>
+         <span className="badge badge-info">{cls.room || "Room TBD"}</span>
+        </div>
+       ))}
       </div>
-      <div className="info-item">
-       <span className="info-item-icon">📖</span>
-       <div className="info-item-content">
-        <div className="info-item-title">Database Management Systems</div>
-        <div className="info-item-subtitle">Wednesday, 10:00 - 11:00 AM</div>
-       </div>
-       <span className="badge badge-info">Room 301</span>
-      </div>
-     </div>
+     )}
     </div>
 
     {/* Pending Tasks */}
@@ -215,32 +268,28 @@ export default function FacultyDashboard() {
      <div className="dashboard-card-header">
       <h3><span>⚡</span> Pending Tasks</h3>
      </div>
-     <div className="info-list">
-      <div className="info-item">
-       <span className="info-item-icon">⚠️</span>
-       <div className="info-item-content">
-        <div className="info-item-title">Submit Internal Marks</div>
-        <div className="info-item-subtitle">DBMS - Due in 3 days</div>
-       </div>
-       <span className="badge badge-danger">Urgent</span>
+     {activity.pendingTasks.length === 0 ? (
+      <div className="empty-state" style={{ padding: "30px" }}>
+       <div className="empty-state-icon">✅</div>
+       <h3>All Caught Up!</h3>
+       <p>No pending tasks at the moment</p>
       </div>
-      <div className="info-item">
-       <span className="info-item-icon">⏰</span>
-       <div className="info-item-content">
-        <div className="info-item-title">Attendance Update</div>
-        <div className="info-item-subtitle">CN - Not updated for 2 days</div>
-       </div>
-       <span className="badge badge-warning">Soon</span>
+     ) : (
+      <div className="info-list">
+       {activity.pendingTasks.map((task, index) => (
+        <div className="info-item" key={index}>
+         <span className="info-item-icon">{getPriorityIcon(task.type)}</span>
+         <div className="info-item-content">
+          <div className="info-item-title">{task.title}</div>
+          <div className="info-item-subtitle">{task.subtitle}</div>
+         </div>
+         <span className={`badge ${getPriorityBadge(task.priority)}`}>
+          {task.priority === "danger" ? "Urgent" : task.priority === "warning" ? "Soon" : "New"}
+         </span>
+        </div>
+       ))}
       </div>
-      <div className="info-item">
-       <span className="info-item-icon">✅</span>
-       <div className="info-item-content">
-        <div className="info-item-title">Assignment Review</div>
-        <div className="info-item-subtitle">5 assignments pending review</div>
-       </div>
-       <span className="badge badge-success">New</span>
-      </div>
-     </div>
+     )}
     </div>
    </div>
   </Layout>

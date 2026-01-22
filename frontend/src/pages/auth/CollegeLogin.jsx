@@ -56,13 +56,13 @@ localStorage.setItem("user", JSON.stringify(res.data.user));
      <p style={{ marginBottom: "10px", color: "#666", fontSize: "14px" }}>Demo Credentials</p>
      <div style={{ display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap" }}>
       <div style={{ padding: "8px 12px", backgroundColor: "#fdeaea", borderRadius: "4px", fontSize: "12px" }}>
-       <strong>Admin:</strong> admin@college.edu / admin123
+       <strong>Admin:</strong> admin@university.edu / admin123
       </div>
       <div style={{ padding: "8px 12px", backgroundColor: "#e8f4fc", borderRadius: "4px", fontSize: "12px" }}>
-       <strong>Student:</strong> john@cse.edu / student123
+       <strong>Student:</strong> student@university.edu/ student123
       </div>
       <div style={{ padding: "8px 12px", backgroundColor: "#e8f8f0", borderRadius: "4px", fontSize: "12px" }}>
-       <strong>Faculty:</strong> robert@college.edu / faculty123
+       <strong>Faculty:</strong> f1@srit / 123456
       </div>
      </div>
     </div>

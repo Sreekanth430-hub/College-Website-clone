@@ -1581,8 +1581,315 @@ button {
 }
 
 /* ================================
-   DEPARTMENT PAGES STYLES
+   RECENT ACTIVITY STYLES
    ================================ */
+.recent-activity-card .activity-list,
+.pending-approvals-card .approval-list {
+ display: flex;
+ flex-direction: column;
+ gap: 12px;
+ max-height: 350px;
+ overflow-y: auto;
+ padding-right: 5px;
+}
+
+.activity-item {
+ display: flex;
+ align-items: flex-start;
+ gap: 12px;
+ padding: 12px;
+ background: #f8fafc;
+ border-radius: 8px;
+ transition: var(--transition);
+}
+
+.activity-item:hover {
+ background: #f1f5f9;
+}
+
+.activity-icon {
+ font-size: 1.5rem;
+ width: 40px;
+ height: 40px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border-radius: 10px;
+ flex-shrink: 0;
+}
+
+.activity-icon.success {
+ background: #dcfce7;
+}
+
+.activity-icon.warning {
+ background: #fef3c7;
+}
+
+.activity-icon.info {
+ background: #dbeafe;
+}
+
+.activity-icon.danger {
+ background: #fee2e2;
+}
+
+.activity-content {
+ flex: 1;
+ min-width: 0;
+}
+
+.activity-title {
+ font-weight: 600;
+ font-size: 0.9rem;
+ color: var(--text-primary);
+ margin-bottom: 3px;
+}
+
+.activity-description {
+ font-size: 0.8rem;
+ color: var(--text-secondary);
+ margin-bottom: 4px;
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+}
+
+.activity-time {
+ font-size: 0.75rem;
+ color: var(--text-secondary);
+ opacity: 0.7;
+}
+
+.refresh-btn {
+ background: #f1f5f9;
+ border: 1px solid var(--border-color);
+ padding: 6px 12px;
+ border-radius: 6px;
+ font-size: 0.8rem;
+ cursor: pointer;
+ transition: var(--transition);
+}
+
+.refresh-btn:hover {
+ background: #e2e8f0;
+}
+
+.view-all-link {
+ font-size: 0.85rem;
+ color: var(--primary-color);
+ font-weight: 500;
+ text-decoration: none;
+ transition: var(--transition);
+}
+
+.view-all-link:hover {
+ color: var(--primary-hover);
+}
+
+.view-all-activity,
+.view-all-approvals {
+ display: block;
+ text-align: center;
+ padding: 12px;
+ color: var(--primary-color);
+ font-weight: 500;
+ font-size: 0.9rem;
+ text-decoration: none;
+ border-top: 1px solid var(--border-color);
+ margin-top: 10px;
+ transition: var(--transition);
+}
+
+.view-all-activity:hover,
+.view-all-approvals:hover {
+ background: #f8fafc;
+ color: var(--primary-hover);
+}
+
+.empty-activity,
+.empty-approval {
+ text-align: center;
+ padding: 30px 20px;
+ color: var(--text-secondary);
+}
+
+.empty-icon {
+ font-size: 2.5rem;
+ display: block;
+ margin-bottom: 10px;
+ opacity: 0.5;
+}
+
+.empty-activity p,
+.empty-approval p {
+ font-size: 0.9rem;
+ margin: 0;
+}
+
+/* ================================
+   PENDING APPROVALS STYLES
+   ================================ */
+.approval-count {
+ font-size: 0.8rem;
+ background: var(--warning-color);
+ color: white;
+ padding: 4px 10px;
+ border-radius: 20px;
+ font-weight: 500;
+}
+
+.approval-item {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ padding: 12px;
+ background: #f8fafc;
+ border-radius: 8px;
+ transition: var(--transition);
+}
+
+.approval-item:hover {
+ background: #f1f5f9;
+}
+
+.approval-info {
+ flex: 1;
+}
+
+.approval-type {
+ font-size: 0.75rem;
+ text-transform: uppercase;
+ font-weight: 600;
+ color: var(--primary-color);
+ margin-bottom: 4px;
+}
+
+.approval-details {
+ font-size: 0.85rem;
+ color: var(--text-primary);
+ margin-bottom: 3px;
+}
+
+.approval-date {
+ font-size: 0.75rem;
+ color: var(--text-secondary);
+}
+
+.approval-actions {
+ display: flex;
+ gap: 8px;
+ margin-left: 10px;
+}
+
+.approval-btn {
+ width: 32px;
+ height: 32px;
+ border-radius: 50%;
+ border: none;
+ font-size: 0.9rem;
+ cursor: pointer;
+ transition: var(--transition);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.approval-btn.approve {
+ background: #dcfce7;
+ color: #166534;
+}
+
+.approval-btn.approve:hover {
+ background: #bbf7d0;
+ transform: scale(1.1);
+}
+
+.approval-btn.reject {
+ background: #fee2e2;
+ color: #991b1b;
+}
+
+.approval-btn.reject:hover {
+ background: #fecaca;
+ transform: scale(1.1);
+}
+
+/* ================================
+   DEPARTMENT OVERVIEW STYLES
+   ================================ */
+.dept-overview-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+ gap: 16px;
+}
+
+.dept-overview-card {
+ background: white;
+ border-radius: 12px;
+ padding: 20px;
+ display: flex;
+ align-items: center;
+ gap: 15px;
+ box-shadow: var(--shadow-sm);
+ border: 1px solid var(--border-color);
+ transition: var(--transition);
+}
+
+.dept-overview-card:hover {
+ box-shadow: var(--shadow-md);
+ transform: translateY(-2px);
+}
+
+.dept-icon {
+ font-size: 2rem;
+ width: 50px;
+ height: 50px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ background: #f1f5f9;
+ border-radius: 12px;
+ flex-shrink: 0;
+}
+
+.dept-info {
+ flex: 1;
+}
+
+.dept-name {
+ font-weight: 600;
+ font-size: 1rem;
+ color: var(--text-primary);
+ margin-bottom: 4px;
+}
+
+.dept-stats {
+ font-size: 0.85rem;
+ color: var(--text-secondary);
+}
+
+.dept-status {
+ padding: 5px 12px;
+ border-radius: 20px;
+ font-size: 0.75rem;
+ font-weight: 500;
+}
+
+.dept-status.active {
+ background: #dcfce7;
+ color: #166534;
+}
+
+.dept-status.inactive {
+ background: #fee2e2;
+ color: #991b1b;
+}
+
+.dept-status.pending {
+ background: #fef3c7;
+ color: #92400e;
+}
 .dept-page {
  max-width: 1200px;
  margin: 0 auto;

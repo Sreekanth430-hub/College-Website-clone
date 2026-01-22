@@ -1,7 +1,25 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Sidebar() {
  const role = localStorage.getItem("role");
+ const user = JSON.parse(localStorage.getItem("user") || "{}");
+ const [facultyCourses, setFacultyCourses] = useState([]);
+
+ useEffect(() => {
+  const fetchCourses = async () => {
+   if (role === "faculty" && user.id) {
+    try {
+     const res = await axios.get(`http://localhost:5050/api/faculty/courses/${user.id}`);
+     setFacultyCourses(res.data);
+    } catch (err) {
+     console.log("Sidebar Course Fetch Error:", err);
+    }
+   }
+  };
+  fetchCourses();
+ }, [role, user.id]);
 
  const menus = {
   student: [
@@ -17,9 +35,8 @@ export default function Sidebar() {
   faculty: [
    ["Dashboard", "/faculty"],
    ["Profile", "/faculty/profile"],
-   ["Courses", "/faculty/courses"],
-   ["Marks Entry", "/faculty/marks"],
    ["Attendance", "/faculty/attendance"],
+   ["Marks Entry", "/faculty/marks"],
    ["Timetable", "/faculty/timetable"],
    ["Analytics", "/faculty/analytics"]
   ],
@@ -38,12 +55,31 @@ export default function Sidebar() {
   ]
  };
 
+ // For faculty, add assigned courses dynamically
+ const getMenuItems = () => {
+  const items = [...menus[role]];
+  
+  if (role === "faculty" && facultyCourses.length > 0) {
+   items.push(["", ""]); // Separator
+   items.push(["My Courses", "/faculty/courses"]);
+   facultyCourses.forEach(course => {
+    items.push([course.course_code, `/faculty/courses?course=${course.id}`]);
+   });
+  }
+  
+  return items;
+ };
+
  return (
   <div className="sidebar">
    <h2>College ERP</h2>
-   {menus[role]?.map(([name, path]) => (
-    <Link key={name} to={path}>{name}</Link>
-   ))}
+   {getMenuItems().map(([name, path], index) => {
+    if (!name && !path) {
+     // Render separator
+     return <div key={`separator-${index}`} style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", margin: "10px 10px" }}></div>;
+    }
+    return <Link key={name} to={path}>{name}</Link>;
+   })}
   </div>
  );
 }
